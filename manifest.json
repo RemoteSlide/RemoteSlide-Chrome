@@ -1,0 +1,55 @@
+{
+  "manifest_version": 2,
+  "name": "RemoteSlide Chrome Extension",
+  "description": "Chrome Extension for remote-sli.de",
+  "version": "1.0",
+  "author": "inventivetalent",
+  "homepage_url": "https://remote-sli.de",
+  "browser_action": {
+    "default_icon": "logo-128.png",
+    "default_popup": "index.html"
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "notifications",
+    "http://*/",
+    "https://*/"
+  ],
+  "content_security_policy": "script-src 'self' https://remote-sli.de https://cdnjs.cloudflare.com https://code.jquery.com; object-src 'self'",
+  "background": {
+    "scripts": [
+      "sessionGrabber.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://remote-sli.de/*"
+      ],
+      "js": [
+        "dummy.js"
+      ]
+    },
+    {
+      "matches": [
+        "*://*/*"
+      ],
+      "js": [
+        "lib/jquery.min.js",
+        "lib/socket.io.js",
+        "inject/injector.js"
+      ]
+    }
+  ],
+  "web_accessible_resources":[
+    "lib/*",
+    "inject/*"
+  ],
+  "externally_connectable": {
+    "matches": [
+      "*://*.remote-sli.de/*"
+    ]
+  }
+}

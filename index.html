@@ -1,0 +1,35 @@
+<link href="lib/bootstrap.min.css" rel="stylesheet">
+<style>
+    .centered {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+</style>
+
+<html ng-app="app" ng-csp>
+    <body ng-controller="mainCtrl" ng-init="session.refresh()">
+        <div class="container" style="padding-top: 20px; padding-bottom: 20px;">
+            <div class="text-center">
+                <div>
+                    <button class="btn" ng-class="{'btn-success':session.initialized, 'btn-primary':!session.initialized}" ng-click="session.injectBookmarkScript()" ng-disabled="session.initialized">{{ session.initialized ? "You're controlling this page" : "Remote-Control this page!" }}</button>
+                </div>
+                <br/>
+
+                <div>
+                    <div>
+                        <img src="" ng-src="{{ session.qr }}">
+                    </div>
+                    <span class="text-muted"> Session ID: {{ session.session }}</span>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+
+<script src="lib/jquery.min.js"></script>
+<script src="lib/bootstrap.min.js"></script>
+<script src="lib/angular.min.js"></script>
+<script src="index.js"></script>
