@@ -20,18 +20,11 @@
   "content_security_policy": "script-src 'self' https://remote-sli.de https://cdnjs.cloudflare.com https://code.jquery.com; object-src 'self'",
   "background": {
     "scripts": [
-      "sessionGrabber.js"
+      "sessionGrabber.js",
+      "hello.js"
     ]
   },
   "content_scripts": [
-    {
-      "matches": [
-        "https://remote-sli.de/*"
-      ],
-      "js": [
-        "dummy.js"
-      ]
-    },
     {
       "matches": [
         "*://*/*"
