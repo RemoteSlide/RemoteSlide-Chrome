@@ -9,10 +9,31 @@ socket.on("init", function (data) {
     } else if (data.state == "success") {
         console.info("Session initialized");
         status("green", "check", "", 5000);
+        session.info = data.info;
+        if (session.info.remotes <= 0) {
+            overlayMessage.show("Waiting for a remote to connect....");
+        }
         try {
             chrome.runtime.sendMessage({action: "session_initialized"}, function (response) {
             });
         } catch (ignored) {
+        }
+    }
+});
+socket.on("info", function (data) {
+    console.log(data);
+    if (data.type == 'client_connected') {
+        session.info = data.info;
+        if (data.clientType == 'remote') {
+            overlayMessage.hide();
+        }
+    }
+    if (data.type == 'client_disconnected') {
+        session.info = data.info;
+        if (data.clientType == 'remote') {
+            if (session.info.remotes <= 0) {
+                overlayMessage.show("Waiting for a remote to connect....");
+            }
         }
     }
 });
@@ -26,6 +47,15 @@ try {
     });
 } catch (ignored) {
 }
+
+var session = {
+    session: remote_slide.session,
+    info: {
+        observer: false,
+        host: false,
+        remotes: 0
+    }
+};
 
 var settings = {
     navigationType: 'button',
@@ -50,7 +80,7 @@ socket.on("settings", function (msg) {
 
     laserPointer.applyStyle();
 });
-window.__remoteSlideSettings=settings;
+window.__remoteSlideSettings = settings;
 
 socket.on("control", function (msg) {
     var keyCode = msg.keyCode;
@@ -98,6 +128,17 @@ function simulateKeyEvent(keyCode, ctrlKey, shiftKey, altKey) {
     (document.head || document.documentElement).appendChild(script);
     script.parentNode.removeChild(script);
 }
+
+var overlayMessage = {
+    show: function (msg) {
+        $(".overlay-message-content").text(msg);
+        $(".laser-calibration-backdrop").fadeIn();
+    },
+    hide: function () {
+        $(".laser-calibration-backdrop").fadeOut();
+        $(".overlay-message-content").empty()
+    }
+};
 
 var laserPointer = {
     setupVectorsRaw: [
