@@ -43,7 +43,7 @@
       ]
     }
   ],
-  "web_accessible_resources":[
+  "web_accessible_resources": [
     "lib/*",
     "inject/*"
   ],
@@ -51,5 +51,6 @@
     "matches": [
       "*://*.remote-sli.de/*"
     ]
-  }
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7SQyG5Jj1krAba1XWdQy5wVBkU4J+7X65s3AKVnLDzell9co9jX+QZJc1+6Ub2xPQrZ+XlkLonIakhBYUukpSpE2Tj/uN5RBY8aLtMUgLzCX+4XjhCPVN9rqY8VrybKb6/HlwVKi5Ig/YiIIyyX2JX8HyxTqbEeZYBhjY13jIvJ4CykVmpSd3vGzGzfDbKWkScqv56Ecggjqs+HSslMpAKZlpc+xW6WavCzQO0I9NFgInvJDlCgnC6HRMvQjzuxZ1cFwPF5UusP+CIHMdA+neSCtuPyZKJj25KRxVb2km/YGmlkxi9p0ilztSCfiYbzIbZKkWXr7144ZqxSZkx9CwQIDAQAB"
 }
