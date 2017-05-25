@@ -38,7 +38,7 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
     if (msg.action == 'controlUpdate') {
         chrome.tabs.getSelected(null, function (tab) {
             if (msg.active) {
-                chrome.browserAction.setBadgeBackgroundColor({color: "lime", tabId: tab.id})
+                chrome.browserAction.setBadgeBackgroundColor({color: "#25bb25", tabId: tab.id})
             } else {
                 chrome.browserAction.setBadgeBackgroundColor({color: "blue", tabId: tab.id})
                 chrome.browserAction.setBadgeText({text: "", tabId: tab.id})
