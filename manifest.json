@@ -21,7 +21,7 @@
   "background": {
     "scripts": [
       "sessionGrabber.js",
-      "hello.js"
+      "background.js"
     ]
   },
   "content_scripts": [
