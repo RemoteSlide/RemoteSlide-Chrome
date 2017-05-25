@@ -11,13 +11,17 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
 
         if (event == 'init') {
             if (data.state == 'success') {
-                chrome.browserAction.setBadgeText({text: data.info.remotes.toString()})
+                chrome.tabs.getSelected(null, function (tab) {
+                    chrome.browserAction.setBadgeText({text: data.info.remotes.toString(), tabId: tab.id})
+                })
             }
         }
 
         if (event == 'info') {
             if (data.type == 'client_connected' || data.type == 'client_disconnected') {
-                chrome.browserAction.setBadgeText({text: data.info.remotes.toString()})
+                chrome.tabs.getSelected(null, function (tab) {
+                    chrome.browserAction.setBadgeText({text: data.info.remotes.toString(), tabId: tab.id})
+                })
             }
         }
     }
@@ -32,12 +36,14 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         });
     }
     if (msg.action == 'controlUpdate') {
-        if (msg.active) {
-            chrome.browserAction.setBadgeBackgroundColor({color: "lime"})
-        } else {
-            chrome.browserAction.setBadgeBackgroundColor({color: "blue"})
-            chrome.browserAction.setBadgeText({text: ""})
-        }
+        chrome.tabs.getSelected(null, function (tab) {
+            if (msg.active) {
+                chrome.browserAction.setBadgeBackgroundColor({color: "lime", tabId: tab.id})
+            } else {
+                chrome.browserAction.setBadgeBackgroundColor({color: "blue", tabId: tab.id})
+                chrome.browserAction.setBadgeText({text: "", tabId: tab.id})
+            }
+        })
     }
 })
 
