@@ -14,7 +14,7 @@
         <div class="container" style="padding-top: 20px; padding-bottom: 20px;">
             <div class="text-center">
                 <div>
-                    <button class="btn" ng-class="{'btn-success':session.initialized, 'btn-primary':!session.initialized}" ng-click="session.injectBookmarkScript()" ng-disabled="session.initialized">{{ session.initialized ? "You're controlling this page" : "Remote-Control this page!" }}</button>
+                    <button class="btn" ng-class="{'btn-success':controlActive, 'btn-primary':!controlActive}" ng-click="session.injectBookmarkScript()" ng-disabled="controlActive">{{ controlActive ? "You're controlling this page" : "Remote-Control this page!" }}</button>
                 </div>
                 <br/>
 
