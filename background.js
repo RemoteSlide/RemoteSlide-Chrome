@@ -35,7 +35,7 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
             });
         });
     }
-    if (msg.action == 'controlUpdate') {
+    if (msg.action == 'controlUpdate') {//TODO: properly handle disconnect event
         chrome.tabs.getSelected(null, function (tab) {
             if (msg.active) {
                 chrome.browserAction.setBadgeBackgroundColor({color: "#25bb25", tabId: tab.id})
