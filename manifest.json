@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
-  "name": "RemoteSlide Chrome Extension",
-  "description": "Chrome Extension for remote-sli.de",
+  "name": "RemoteSlide",
+  "description": "Remotely control slides and presentations from your smartphone.",
   "version": "1.0",
   "author": "inventivetalent",
   "homepage_url": "https://remote-sli.de",
