@@ -1,3 +1,4 @@
 [submodule "inject/controller"]
 	path = inject/controller
 	url = https://github.com/RemoteSlide/RemoteSlide-Controller
+	branch = master
