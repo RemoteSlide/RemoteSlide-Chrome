@@ -79,7 +79,7 @@ app.controller("mainCtrl", function ($scope, $timeout) {
                 $scope.controlActive = msg.active;
 
                 if (msg.active) {
-                    chrome.browserAction.setBadgeBackgroundColor({color: "lime"})
+                    chrome.browserAction.setBadgeBackgroundColor({color: "#25bb25"})
                 } else {
                     chrome.browserAction.setBadgeBackgroundColor({color: "blue"})
                 }
