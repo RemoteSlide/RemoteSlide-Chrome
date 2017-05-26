@@ -6,8 +6,16 @@
   "author": "inventivetalent",
   "homepage_url": "https://remote-sli.de",
   "browser_action": {
-    "default_icon": "logo-128.png",
+    "default_icon": "img/logo-128.png",
     "default_popup": "index.html"
+  },
+  "icons": {
+    "16": "img/logo-16.png",
+    "32": "img/logo-32.png",
+    "64": "img/logo-64.png",
+    "128": "img/logo-128.png",
+    "256": "img/logo-256.png",
+    "512": "img/logo-512.png"
   },
   "permissions": [
     "storage",
