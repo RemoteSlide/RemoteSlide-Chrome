@@ -48,7 +48,7 @@ app.controller("mainCtrl", function ($scope, $timeout) {
                     })
                 });
                 chrome.tabs.executeScript(tab.id, {
-                    file: "inject/res/pageController.js"
+                    file: "inject/controller/pageController.js"
                 });
                 chrome.tabs.sendMessage(tab.id, {action: "inject_controller"}, function (response) {
                 });
