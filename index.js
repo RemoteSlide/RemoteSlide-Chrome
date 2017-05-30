@@ -78,11 +78,17 @@ app.controller("mainCtrl", function ($scope, $timeout) {
             $timeout(function () {
                 $scope.controlActive = msg.active;
 
-                if (msg.active) {
-                    chrome.browserAction.setBadgeBackgroundColor({color: "#25bb25"})
-                } else {
-                    chrome.browserAction.setBadgeBackgroundColor({color: "blue"})
-                }
+                chrome.storage.local.get(["controlledTab"], function (items) {
+                    console.log(items)
+                    if(items.controlledTab){
+                        if (msg.active) {
+                            chrome.browserAction.setBadgeBackgroundColor({color: "#25bb25", tabId: items.controlledTab.id})
+                        } else {
+                            chrome.browserAction.setBadgeBackgroundColor({color: "blue", tabId: items.controlledTab.id})
+                            chrome.browserAction.setBadgeText({text: "", tabId: items.controlledTab.id})
+                        }
+                    }
+                });
             })
         }
     });
