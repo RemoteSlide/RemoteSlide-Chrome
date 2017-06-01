@@ -5,9 +5,6 @@ chrome.runtime.onMessageExternal.addListener(function (msg, sender, sendResponse
         chrome.storage.local.get(["session"], function (items) {
             var oldSession = items.session;
 
-            console.log("old: "+JSON.stringify(oldSession?oldSession.session:null))
-            console.log("new: "+JSON.stringify(msg.session.session));
-
             msg.session.sessionTime = new Date().valueOf();
             chrome.storage.local.set({"session": msg.session});
             if (!oldSession || oldSession.session != msg.session.session) {
