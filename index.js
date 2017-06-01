@@ -25,6 +25,13 @@ app.controller("mainCtrl", function ($scope, $timeout) {
 
             console.info($scope.session)
         },
+        toggleControl: function () {
+            if ($scope.controlActive) {
+                $scope.session.reloadTab();
+            } else {
+                $scope.session.injectBookmarkScript();
+            }
+        },
         injectBookmarkScript: function () {
             // $("body").append("<script src='https://remote-sli.de/res/host-bookmark.js'></script>")
             // chrome.tabs.executeScript(null, {file: "lib/jquery.min.js"});
@@ -57,6 +64,11 @@ app.controller("mainCtrl", function ($scope, $timeout) {
                 });
             });
 
+        },
+        reloadTab: function () {
+            chrome.tabs.getSelected(null, function (tab) {
+                chrome.tabs.reload(tab.id);
+            });
         }
     }
     chrome.storage.onChanged.addListener(function (changes, area) {
@@ -80,7 +92,7 @@ app.controller("mainCtrl", function ($scope, $timeout) {
 
                 chrome.storage.local.get(["controlledTab"], function (items) {
                     console.log(items)
-                    if(items.controlledTab){
+                    if (items.controlledTab) {
                         if (msg.active) {
                             chrome.browserAction.setBadgeBackgroundColor({color: "#25bb25", tabId: items.controlledTab.id})
                         } else {
