@@ -5,20 +5,23 @@ chrome.runtime.onMessageExternal.addListener(function (msg, sender, sendResponse
         chrome.storage.local.get(["session"], function (items) {
             var oldSession = items.session;
 
+            console.log("old: "+JSON.stringify(oldSession?oldSession.session:null))
+            console.log("new: "+JSON.stringify(msg.session.session));
+
             msg.session.sessionTime = new Date().valueOf();
-            chrome.storage.local.set({"session": msg.session}, function () {
-                if (!oldSession || oldSession.session != msg.session.session) {
-                    chrome.notifications.create('new-session-created-notification', {
-                        type: 'basic',
-                        iconUrl: 'logo-128.png',
-                        title: 'Session Updated',
-                        message: 'A new session has been created\n' +
-                        'Click the icon to start presenting!',
-                        contextMessage: msg.session.session
-                    }, function (notificationId) {
-                    });
-                }
-            });
+            chrome.storage.local.set({"session": msg.session});
+            if (!oldSession || oldSession.session != msg.session.session) {
+                console.log("notification created")
+                chrome.notifications.create('new-session-created-notification', {
+                    type: 'basic',
+                    iconUrl: 'img/logo-128.png',
+                    title: 'Session Updated',
+                    message: 'A new session has been created\n' +
+                    'Click the icon to start presenting!',
+                    contextMessage: msg.session.session
+                }, function (notificationId) {
+                });
+            }
         });
     }
 });
