@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         if (event == 'init') {
             if (data.state == 'success') {
                 chrome.tabs.getSelected(null, function (tab) {
-                    chrome.browserAction.setBadgeText({text: data.info.remotes.toString(), tabId: tab.id})
+                    chrome.browserAction.setBadgeText({text: data.info.remotes.length.toString(), tabId: tab.id})
                 })
             }
         }
@@ -20,7 +20,7 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         if (event == 'info') {
             if (data.type == 'client_connected' || data.type == 'client_disconnected') {
                 chrome.tabs.getSelected(null, function (tab) {
-                    chrome.browserAction.setBadgeText({text: data.info.remotes.toString(), tabId: tab.id})
+                    chrome.browserAction.setBadgeText({text: data.info.remotes.length.toString(), tabId: tab.id})
                 })
             }
         }
