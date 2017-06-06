@@ -68,6 +68,12 @@ chrome.storage.onChanged.addListener(function (changes, area) {
     }
 })
 
+
+chrome.tabs.onUpdated.addListener( function( tabId,  changeInfo,  tab) {
+    console.log(changeInfo.status)
+    console.log(tab.url);
+});
+
 function resizeImage(url, percent, callback) {
     var sourceImage = new Image();
 
