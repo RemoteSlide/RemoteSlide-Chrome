@@ -4,6 +4,7 @@ chrome.runtime.onMessageExternal.addListener(function (msg, sender, sendResponse
     }
 });
 
+// Handle messages from the pageController script
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
     if (msg.action == 'socketEvent') {
         var event = msg.event;
@@ -45,6 +46,17 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
             }
         })
     }
+    if (msg.action == "takeScreenshot") {
+        chrome.tabs.captureVisibleTab(null, {format:"png",quality: 50}, function (image) {
+            console.log(image);
+            resizeImage(image,0.4,function (img) {
+                console.log(img)
+                sendResponse({image: img});
+            })
+        });
+    }
+
+    return true;
 })
 
 chrome.storage.onChanged.addListener(function (changes, area) {
@@ -55,3 +67,22 @@ chrome.storage.onChanged.addListener(function (changes, area) {
         }
     }
 })
+
+function resizeImage(url, percent, callback) {
+    var sourceImage = new Image();
+
+    sourceImage.onload = function() {
+        // Create a canvas with the desired dimensions
+        var canvas = document.createElement("canvas");
+        canvas.width = sourceImage.width*percent;
+        canvas.height = sourceImage.height*percent;
+
+        // Scale and draw the source image to the canvas
+        canvas.getContext("2d").drawImage(sourceImage, 0, 0, sourceImage.width*percent, sourceImage.height*percent);
+
+        // Convert the canvas to a data URL in PNG format
+        callback(canvas.toDataURL());
+    }
+
+    sourceImage.src = url;
+}
