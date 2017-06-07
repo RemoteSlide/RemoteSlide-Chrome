@@ -47,6 +47,9 @@ app.controller("mainCtrl", function ($scope, $timeout) {
                 chrome.tabs.executeScript(tab.id, {
                     file: "lib/socket.io.js"
                 });
+                chrome.tabs.executeScript(tab.id,{
+                    file:"lib/attrchange.js"
+                })
 
                 chrome.tabs.executeScript(tab.id, {
                     code: "remote_slide = " + JSON.stringify({

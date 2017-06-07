@@ -47,10 +47,16 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         })
     }
     if (msg.action == "takeScreenshot") {
-        chrome.tabs.captureVisibleTab(null, {format:"png",quality: 50}, function (image) {
-            console.log(image);
-            resizeImage(image,0.4,function (img) {
-                console.log(img)
+        var tStart = Date.now();
+        chrome.tabs.captureVisibleTab(null, {format: "png", quality: 20}, function (image) {
+            var tTime = Date.now() - tStart;
+            var rStart = Date.now();
+            console.log("Take Screenshot time: " + tTime);
+            resizeImage(image, 0.2, function (img) {
+                var rTime = Date.now() - rStart;
+                console.log("Resize time: " + rTime);
+                console.log("Total time: " + (Date.now() - tStart));
+                // console.log(img)
                 sendResponse({image: img});
             })
         });
@@ -69,7 +75,7 @@ chrome.storage.onChanged.addListener(function (changes, area) {
 })
 
 
-chrome.tabs.onUpdated.addListener( function( tabId,  changeInfo,  tab) {
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     console.log(changeInfo.status)
     console.log(tab.url);
 });
@@ -77,14 +83,14 @@ chrome.tabs.onUpdated.addListener( function( tabId,  changeInfo,  tab) {
 function resizeImage(url, percent, callback) {
     var sourceImage = new Image();
 
-    sourceImage.onload = function() {
+    sourceImage.onload = function () {
         // Create a canvas with the desired dimensions
         var canvas = document.createElement("canvas");
-        canvas.width = sourceImage.width*percent;
-        canvas.height = sourceImage.height*percent;
+        canvas.width = sourceImage.width * percent;
+        canvas.height = sourceImage.height * percent;
 
         // Scale and draw the source image to the canvas
-        canvas.getContext("2d").drawImage(sourceImage, 0, 0, sourceImage.width*percent, sourceImage.height*percent);
+        canvas.getContext("2d").drawImage(sourceImage, 0, 0, sourceImage.width * percent, sourceImage.height * percent);
 
         // Convert the canvas to a data URL in PNG format
         callback(canvas.toDataURL());
