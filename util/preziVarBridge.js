@@ -10,16 +10,22 @@ document.body.appendChild(script);
 
 var prevIndex = 0;
 var prevSize = 0;
+var prevActionIndex = 0;
+var prevActionSize = 0;
 
 setInterval(function () {
     if (window.preziPlayerJS && window.preziPlayerJS.playerUI && window.preziPlayerJS.playerUI.playback) {
         var index = window.preziPlayerJS.playerUI.playback.getCurrentStepIndex();
         var size = window.preziPlayerJS.playerUI.playback.getStepCount();
-        if (index == prevIndex && size == prevSize)return;
+        var actionIndex = window.preziPlayerJS.playerUI.playback.getCurrentActionIndex(index);
+        var actionSize = window.preziPlayerJS.playerUI.playback.getCurrentActionCount(index);
+        if (index == prevIndex && size == prevSize && actionIndex == prevActionIndex && actionSize == prevActionSize)return;
         script.setAttribute("data-ready", "true");
         var obj = {
             index: prevIndex = index,
-            size: prevSize = size
+            size: prevSize = size,
+            actionIndex: prevActionIndex = actionIndex,
+            actionSize: prevActionSize = actionSize
         };
         script.innerHTML = JSON.stringify(obj);
         script.dispatchEvent(new Event("change"));
