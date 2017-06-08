@@ -43,12 +43,22 @@
         "lib/jquery.min.js",
         "lib/socket.io.js",
         "inject/injector.js"
-      ]
+      ],
+      "all_frames":true
+    },
+    {
+      "matches":[
+        "https://prezi.com/*",
+        "http://prezi.com/*"
+      ],
+      "js":["util/preziInjector.js"],
+      "all_frames":true
     }
   ],
   "web_accessible_resources": [
     "lib/*",
-    "inject/*"
+    "inject/*",
+    "util/*"
   ],
   "externally_connectable": {
     "matches": [
