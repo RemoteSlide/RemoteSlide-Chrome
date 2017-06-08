@@ -2,6 +2,7 @@ var app = angular.module("app", []);
 
 app.controller("mainCtrl", function ($scope, $timeout) {
     $scope.controlActive = false;
+    $scope.controlSite = undefined;
     $scope.session = {
         session: "",
         qr: "",
@@ -47,8 +48,8 @@ app.controller("mainCtrl", function ($scope, $timeout) {
                 chrome.tabs.executeScript(tab.id, {
                     file: "lib/socket.io.js"
                 });
-                chrome.tabs.executeScript(tab.id,{
-                    file:"lib/attrchange.js"
+                chrome.tabs.executeScript(tab.id, {
+                    file: "lib/attrchange.js"
                 })
 
                 chrome.tabs.executeScript(tab.id, {
@@ -92,6 +93,7 @@ app.controller("mainCtrl", function ($scope, $timeout) {
         if (msg.action == 'controlUpdate') {
             $timeout(function () {
                 $scope.controlActive = msg.active;
+                $scope.controlSite = msg.site;
 
                 chrome.storage.local.get(["controlledTab"], function (items) {
                     console.log(items)

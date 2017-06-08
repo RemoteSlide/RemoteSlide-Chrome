@@ -16,6 +16,9 @@
                 <div>
                     <button class="btn" ng-class="{'btn-success':controlActive, 'btn-primary':!controlActive}" ng-click="session.toggleControl()">{{ controlActive ? "You're controlling this page (click to stop)" : "Remote-Control this page!" }}</button>
                 </div>
+                <div ng-show="controlSite">
+                    <span class="text-muted">{{ controlSite }}</span>
+                </div>
                 <br/>
 
                 <div>
