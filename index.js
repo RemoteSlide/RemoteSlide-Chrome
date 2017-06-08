@@ -4,6 +4,7 @@ app.controller("mainCtrl", function ($scope, $timeout) {
     $scope.controlActive = false;
     $scope.controlSite = undefined;
     $scope.session = {
+        loading: true,
         session: "",
         qr: "",
         bookmarkContent: "",
@@ -13,9 +14,17 @@ app.controller("mainCtrl", function ($scope, $timeout) {
                 $timeout(function () {
                     if (items.session && items.session.sessionTime && (new Date().valueOf() - items.session.sessionTime < 3.6e+6)) {
                         $.extend($scope.session, items.session);
+                        $scope.session.loading = false;
                     } else {
                         // session already expired
-                        chrome.tabs.create({url: "https://remote-sli.de"});
+                        // chrome.tabs.getSelected(null, function (tab) {
+                        //     chrome.storage.local.set({parentTabId: tab.id});
+                        $scope.session.loading = true;
+                        chrome.tabs.create({url: "https://remote-sli.de?sessionOnly", active: false});
+                        $timeout(function () {
+                            window.close();
+                        }, 1500);
+                        // });
                     }
                 })
             });
