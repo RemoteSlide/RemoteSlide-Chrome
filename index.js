@@ -81,6 +81,9 @@ app.controller("mainCtrl", function ($scope, $timeout) {
         reloadTab: function () {
             chrome.tabs.getSelected(null, function (tab) {
                 chrome.tabs.reload(tab.id);
+                $timeout(function () {
+                    window.close();
+                }, 1500);
             });
         }
     }
