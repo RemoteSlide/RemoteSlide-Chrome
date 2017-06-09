@@ -75,6 +75,8 @@ app.controller("mainCtrl", function ($scope, $timeout) {
 
                 chrome.storage.local.set({"controlledTab": tab.id}, function () {
                 });
+                chrome.storage.local.set({"controlledWindow": tab.windowId}, function () {
+                });
             });
 
         },

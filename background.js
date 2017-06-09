@@ -48,17 +48,19 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
     }
     if (msg.action == "takeScreenshot") {
         var tStart = Date.now();
-        chrome.tabs.captureVisibleTab(null, {format: "jpeg", quality: 50}, function (image) {
-            var tTime = Date.now() - tStart;
-            var rStart = Date.now();
-            console.log("Take Screenshot time: " + tTime);
-            resizeImage(image, 0.4, function (img) {
-                var rTime = Date.now() - rStart;
-                console.log("Resize time: " + rTime);
-                console.log("Total time: " + (Date.now() - tStart));
-                // console.log(img)
-                sendResponse({image: img});
-            })
+        chrome.storage.local.get(["controlledWindow"], function (items) {
+            chrome.tabs.captureVisibleTab(items.controlledWindow, {format: "jpeg", quality: 50}, function (image) {
+                var tTime = Date.now() - tStart;
+                var rStart = Date.now();
+                console.log("Take Screenshot time: " + tTime);
+                resizeImage(image, 0.4, function (img) {
+                    var rTime = Date.now() - rStart;
+                    console.log("Resize time: " + rTime);
+                    console.log("Total time: " + (Date.now() - tStart));
+                    // console.log(img)
+                    sendResponse({image: img});
+                })
+            });
         });
     }
 
@@ -89,7 +91,7 @@ function resizeImage(url, percent, callback) {
         canvas.width = sourceImage.width * percent;
         canvas.height = sourceImage.height * percent;
 
-        console.info(canvas.width+"x"+canvas.height)
+        console.info(canvas.width + "x" + canvas.height)
 
         // Scale and draw the source image to the canvas
         canvas.getContext("2d").drawImage(sourceImage, 0, 0, sourceImage.width * percent, sourceImage.height * percent);
