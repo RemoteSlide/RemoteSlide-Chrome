@@ -58,6 +58,9 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
                     console.log("Resize time: " + rTime);
                     console.log("Total time: " + (Date.now() - tStart));
                     // console.log(img)
+                    var head = 'data:image/png;base64,';
+                    var imgFileSize = Math.round((img.length - head.length) * 3 / 4);
+                    console.info("Screenshot File Size: " + (imgFileSize / (1024)).toFixed(2) + "KB")
                     sendResponse({image: img});
                 })
             });
