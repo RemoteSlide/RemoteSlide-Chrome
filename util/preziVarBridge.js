@@ -18,7 +18,7 @@ setInterval(function () {
         var index = window.preziPlayerJS.playerUI.playback.getCurrentStepIndex();
         var size = window.preziPlayerJS.playerUI.playback.getStepCount();
         var actionIndex = window.preziPlayerJS.playerUI.playback.getCurrentActionIndex(index);
-        var actionSize = window.preziPlayerJS.playerUI.playback.getCurrentActionCount(index);
+        var actionSize = window.preziPlayerJS.playerUI.playback.getActionCount(index);
         if (index == prevIndex && size == prevSize && actionIndex == prevActionIndex && actionSize == prevActionSize)return;
         script.setAttribute("data-ready", "true");
         var obj = {
