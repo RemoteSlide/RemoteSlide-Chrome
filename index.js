@@ -109,6 +109,21 @@ app.controller("mainCtrl", function ($scope, $timeout) {
                 $scope.controlActive = msg.active;
                 $scope.controlSite = msg.site;
 
+                console.log(msg.site)
+                if ("Google Slides" === msg.site) {
+                    // Workaround to fix Google Slide controls
+                    chrome.tabs.getSelected(null, function (tab) {
+                        console.log(tab)
+
+                        var editUrlRegex = /https:\/\/docs\.google\.com\/presentation\/d\/(.+)\/edit(.*)/;
+                        if (editUrlRegex.test(tab.url)) {
+                            console.info("Detected Google Slides edit page. Redirecting to presentation page...");
+                            var match = tab.url.match(editUrlRegex)
+                            chrome.tabs.update(tab.id, {url: "https://docs.google.com/presentation/d/" + match[1] + "/present"});
+                        }
+                    });
+                }
+
                 chrome.storage.local.get(["controlledTab"], function (items) {
                     console.log(items)
                     if (items.controlledTab) {
