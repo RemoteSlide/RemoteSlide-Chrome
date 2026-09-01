@@ -1,11 +1,12 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "RemoteSlide",
   "description": "Remotely control slides and presentations from your smartphone.",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "author": "inventivetalent",
   "homepage_url": "https://remote-sli.de",
-  "browser_action": {
+  "minimum_chrome_version": "102",
+  "action": {
     "default_icon": "img/logo-128.png",
     "default_popup": "index.html"
   },
@@ -21,18 +22,17 @@
     "storage",
     "tabs",
     "activeTab",
-    "<all_urls>",
-    "notifications",
-    "http://*/",
-    "https://*/"
+    "scripting",
+    "notifications"
   ],
-  "content_security_policy": "script-src 'self' https://remote-sli.de https://cdnjs.cloudflare.com https://code.jquery.com https://ssl.google-analytics.com; object-src 'self'",
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
   "background": {
-    "scripts": [
-      "lib/jquery.min.js",
-      "sessionGrabber.js",
-      "background.js"
-    ]
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
@@ -44,21 +44,30 @@
         "lib/socket.io.js",
         "inject/injector.js"
       ],
-      "all_frames":true
+      "all_frames": true
     },
     {
-      "matches":[
+      "matches": [
         "https://prezi.com/*",
         "http://prezi.com/*"
       ],
-      "js":["util/preziInjector.js"],
-      "all_frames":true
+      "js": [
+        "util/preziInjector.js"
+      ],
+      "all_frames": true
     }
   ],
   "web_accessible_resources": [
-    "lib/*",
-    "inject/*",
-    "util/*"
+    {
+      "resources": [
+        "lib/*",
+        "inject/*",
+        "util/*"
+      ],
+      "matches": [
+        "*://*/*"
+      ]
+    }
   ],
   "externally_connectable": {
     "matches": [
