@@ -58,7 +58,6 @@ app.controller("mainCtrl", function ($scope, $timeout) {
                 chrome.scripting.executeScript({
                     target: target,
                     files: [
-                        "util/mv3-compat.js",
                         "lib/jquery.min.js",
                         "lib/socket.io.js",
                         "lib/attrchange.js"
