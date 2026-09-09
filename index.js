@@ -1,5 +1,14 @@
 var app = angular.module("app", []);
 
+// chrome.tabs.getSelected is gone in MV3; the popup always belongs to the current window.
+function withActiveTab(callback) {
+    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        if (tabs && tabs.length > 0) {
+            callback(tabs[0]);
+        }
+    });
+}
+
 app.controller("mainCtrl", function ($scope, $timeout) {
     $scope.controlActive = false;
     $scope.controlSite = undefined;
@@ -17,20 +26,20 @@ app.controller("mainCtrl", function ($scope, $timeout) {
                         $scope.session.loading = false;
                     } else {
                         // session already expired
-                        // chrome.tabs.getSelected(null, function (tab) {
-                        //     chrome.storage.local.set({parentTabId: tab.id});
                         $scope.session.loading = true;
                         chrome.tabs.create({url: "https://remote-sli.de?sessionOnly", active: false});
                         $timeout(function () {
                             window.close();
                         }, 1500);
-                        // });
                     }
                 })
             });
 
-            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-                chrome.tabs.sendMessage(tabs[0].id, {action: "stateRequest"});
+            withActiveTab(function (tab) {
+                chrome.tabs.sendMessage(tab.id, {action: "stateRequest"}, function () {
+                    // No controller on this tab yet - nothing to report
+                    void chrome.runtime.lastError;
+                });
             });
 
             console.info($scope.session)
@@ -43,34 +52,40 @@ app.controller("mainCtrl", function ($scope, $timeout) {
             }
         },
         injectBookmarkScript: function () {
-            // $("body").append("<script src='https://remote-sli.de/res/host-bookmark.js'></script>")
-            // chrome.tabs.executeScript(null, {file: "lib/jquery.min.js"});
-            // chrome.tabs.executeScript(null, {file: "lib/socket.io.js"});
-            // $.get("https://remote-sli.de/res/host-bookmark.js", function (data) {
-            //     chrome.tabs.executeScript(null, {code: data})
-            // });
+            withActiveTab(function (tab) {
+                var target = {tabId: tab.id};
 
-            chrome.tabs.getSelected(null, function (tab) {
-                chrome.tabs.executeScript(tab.id, {
-                    file: "lib/jquery.min.js"
-                });
-                chrome.tabs.executeScript(tab.id, {
-                    file: "lib/socket.io.js"
-                });
-                chrome.tabs.executeScript(tab.id, {
-                    file: "lib/attrchange.js"
-                })
-
-                chrome.tabs.executeScript(tab.id, {
-                    code: "remote_slide = " + JSON.stringify({
-                        session: $scope.session.session,
-                        injector: 'extension_chrome'
-                    })
-                });
-                chrome.tabs.executeScript(tab.id, {
-                    file: "inject/controller/pageController.js"
-                });
-                chrome.tabs.sendMessage(tab.id, {action: "inject_controller"}, function (response) {
+                chrome.scripting.executeScript({
+                    target: target,
+                    files: [
+                        "util/mv3-compat.js",
+                        "lib/jquery.min.js",
+                        "lib/socket.io.js",
+                        "lib/attrchange.js"
+                    ]
+                }).then(function () {
+                    // MV3 has no executeScript({code}), so hand the session over as an argument
+                    return chrome.scripting.executeScript({
+                        target: target,
+                        func: function (remoteSlide) {
+                            window.remote_slide = remoteSlide;
+                        },
+                        args: [{
+                            session: $scope.session.session,
+                            injector: 'extension_chrome'
+                        }]
+                    });
+                }).then(function () {
+                    return chrome.scripting.executeScript({
+                        target: target,
+                        files: ["inject/controller/pageController.js"]
+                    });
+                }).then(function () {
+                    chrome.tabs.sendMessage(tab.id, {action: "inject_controller"}, function (response) {
+                        void chrome.runtime.lastError;
+                    });
+                }).catch(function (err) {
+                    console.error("Failed to inject the page controller: " + err);
                 });
 
                 chrome.storage.local.set({"controlledTab": tab.id}, function () {
@@ -81,7 +96,7 @@ app.controller("mainCtrl", function ($scope, $timeout) {
 
         },
         reloadTab: function () {
-            chrome.tabs.getSelected(null, function (tab) {
+            withActiveTab(function (tab) {
                 chrome.tabs.reload(tab.id);
                 $timeout(function () {
                     window.close();
@@ -102,7 +117,7 @@ app.controller("mainCtrl", function ($scope, $timeout) {
         }
     })
 
-    chrome.extension.onMessage.addListener(function (msg, sender, sendResponse) {
+    chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         console.log(msg)
         if (msg.action == 'controlUpdate') {
             $timeout(function () {
@@ -112,7 +127,7 @@ app.controller("mainCtrl", function ($scope, $timeout) {
                 console.log(msg.site)
                 if ("Google Slides" === msg.site) {
                     // Workaround to fix Google Slide controls
-                    chrome.tabs.getSelected(null, function (tab) {
+                    withActiveTab(function (tab) {
                         console.log(tab)
 
                         var editUrlRegex = /https:\/\/docs\.google\.com\/presentation\/d\/(.+)\/edit(.*)/;
@@ -126,12 +141,12 @@ app.controller("mainCtrl", function ($scope, $timeout) {
 
                 chrome.storage.local.get(["controlledTab"], function (items) {
                     console.log(items)
-                    if (items.controlledTab) {
+                    if (typeof items.controlledTab === 'number') {
                         if (msg.active) {
-                            chrome.browserAction.setBadgeBackgroundColor({color: "#25bb25", tabId: items.controlledTab.id})
+                            chrome.action.setBadgeBackgroundColor({color: "#25bb25", tabId: items.controlledTab})
                         } else {
-                            chrome.browserAction.setBadgeBackgroundColor({color: "blue", tabId: items.controlledTab.id})
-                            chrome.browserAction.setBadgeText({text: "", tabId: items.controlledTab.id})
+                            chrome.action.setBadgeBackgroundColor({color: "blue", tabId: items.controlledTab})
+                            chrome.action.setBadgeText({text: "", tabId: items.controlledTab})
                         }
                     }
                 });
@@ -140,4 +155,3 @@ app.controller("mainCtrl", function ($scope, $timeout) {
     });
 
 });
-
