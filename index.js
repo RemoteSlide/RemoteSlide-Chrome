@@ -59,8 +59,8 @@ app.controller("mainCtrl", function ($scope, $timeout) {
                     target: target,
                     files: [
                         "lib/jquery.min.js",
-                        "lib/socket.io.js",
-                        "lib/attrchange.js"
+                        "lib/attrchange.js",
+                        "inject/controller/rs-socket.js"
                     ]
                 }).then(function () {
                     // MV3 has no executeScript({code}), so hand the session over as an argument
