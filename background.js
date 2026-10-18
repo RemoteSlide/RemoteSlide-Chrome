@@ -1,9 +1,32 @@
-importScripts("sessionGrabber.js");
+// Chrome runs this file as a service worker, which pulls in its siblings itself.
+// Firefox has no background service workers and runs it as an event page
+// instead, with sessionGrabber.js already loaded from background.scripts.
+if (typeof importScripts === "function") {
+    importScripts("sessionGrabber.js");
+}
+
+// Messages from remote-sli.de. Chrome lets the site send them here directly
+// (externally_connectable); Firefox doesn't let web pages message an extension
+// at all, so there util/siteBridge.js relays what the site posts to its window.
+function handleSiteMessage(msg, sendResponse) {
+    if (msg.session) {
+        grabSession(msg.session);
+    }
+    // Always answer: the site closes the tab it opened for a session once it hears back
+    sendResponse(msg.ping == 'hello' ? {pong: "hello"} : {});
+}
+
+function isSiteSender(sender) {
+    try {
+        var host = new URL(sender.url).hostname;
+        return host == "remote-sli.de" || host.endsWith(".remote-sli.de");
+    } catch (ignored) {
+        return false;
+    }
+}
 
 chrome.runtime.onMessageExternal.addListener(function (msg, sender, sendResponse) {
-    if (msg.ping && msg.ping == 'hello') {
-        sendResponse({pong: "hello"});
-    }
+    handleSiteMessage(msg, sendResponse);
 });
 
 // The badge belongs to the tab the controller runs in. Messages from the injected
@@ -27,6 +50,9 @@ function setRemoteCountBadge(sender, data) {
 
 // Handle messages from the pageController script
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+    if (msg.action == 'siteMessage' && isSiteSender(sender)) {
+        handleSiteMessage(msg.message || {}, sendResponse);
+    }
     if (msg.action == 'socketEvent') {
         var event = msg.event;
         var data = msg.data;
