@@ -8,7 +8,7 @@
   "minimum_chrome_version": "121",
   "browser_specific_settings": {
     "gecko": {
-      "id": "remoteslide@remote-sli.de",
+      "id": "remoteslide@inventivetalent.org",
       "strict_min_version": "140.0",
       "data_collection_permissions": {
         "required": [
@@ -69,6 +69,15 @@
         "util/preziInjector.js"
       ],
       "all_frames": true
+    },
+    {
+      "matches": [
+        "*://*.remote-sli.de/*"
+      ],
+      "js": [
+        "util/siteBridge.js"
+      ],
+      "run_at": "document_start"
     }
   ],
   "web_accessible_resources": [
