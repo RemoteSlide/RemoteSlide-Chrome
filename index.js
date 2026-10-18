@@ -1,5 +1,8 @@
 var app = angular.module("app", []);
 
+// Shown in the session's connection info, so tell the two builds apart
+var INJECTOR = chrome.runtime.getURL("").indexOf("moz-extension:") === 0 ? "extension_firefox" : "extension_chrome";
+
 // chrome.tabs.getSelected is gone in MV3; the popup always belongs to the current window.
 function withActiveTab(callback) {
     chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
@@ -71,7 +74,7 @@ app.controller("mainCtrl", function ($scope, $timeout) {
                         },
                         args: [{
                             session: $scope.session.session,
-                            injector: 'extension_chrome'
+                            injector: INJECTOR
                         }]
                     });
                 }).then(function () {

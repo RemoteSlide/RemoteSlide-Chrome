@@ -1,4 +1,9 @@
-importScripts("sessionGrabber.js");
+// Chrome runs this file as a service worker, which pulls in its siblings itself.
+// Firefox has no background service workers and runs it as an event page
+// instead, with sessionGrabber.js already loaded from background.scripts.
+if (typeof importScripts === "function") {
+    importScripts("sessionGrabber.js");
+}
 
 chrome.runtime.onMessageExternal.addListener(function (msg, sender, sendResponse) {
     if (msg.ping && msg.ping == 'hello') {

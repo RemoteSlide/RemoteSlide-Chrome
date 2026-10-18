@@ -5,7 +5,18 @@
   "version": "1.2.0",
   "author": "inventivetalent",
   "homepage_url": "https://remote-sli.de",
-  "minimum_chrome_version": "102",
+  "minimum_chrome_version": "121",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "remoteslide@remote-sli.de",
+      "strict_min_version": "140.0",
+      "data_collection_permissions": {
+        "required": [
+          "websiteContent"
+        ]
+      }
+    }
+  },
   "action": {
     "default_icon": "img/logo-128.png",
     "default_popup": "index.html"
@@ -32,7 +43,11 @@
     "extension_pages": "script-src 'self'; object-src 'self'"
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "scripts": [
+      "sessionGrabber.js",
+      "background.js"
+    ]
   },
   "content_scripts": [
     {
